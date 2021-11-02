@@ -46,7 +46,7 @@ module Mongoid
     end
 
     def undislike(disliker)
-      id = disliker_id(ldisiker)
+      id = disliker_id(disliker)
       return unless disliked? id
 
       pull dislikers: id

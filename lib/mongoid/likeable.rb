@@ -11,6 +11,8 @@ module Mongoid
       field :likers, type: Array, default: []
       field :dislikes, type: Integer, default: 0
       field :dislikers, type: Array, default: []
+      field :votes, type: Integer, default: 0
+      field :voters, type: Array, default: []
     end
 
     # Like
@@ -58,6 +60,29 @@ module Mongoid
       dislikers.include?(id)
     end
 
+    # Vote
+
+    def vote(voter)
+      id = voter_id(voter)
+      return if liked? id
+
+      push voters: id
+      update_voters
+    end
+
+    def unvote(voter)
+      id = voter_id(voter)
+      return unless liked? id
+
+      pull voters: id
+      update_voters
+    end
+
+    def voted?(voter)
+      id = voter_id(voter)
+      voters.include?(id)
+    end
+
     private
 
     # Like
@@ -84,6 +109,19 @@ module Mongoid
 
     def update_dislikers
       update_attribute :dislikes, dislikers.size
+    end
+
+    # Vote
+    def voter_id(liker)
+      if liker.respond_to?(:_id)
+        liker._id
+      else
+        liker
+      end
+    end
+
+    def update_voters
+      update_attribute :votes, votes.size
     end
   end
 end

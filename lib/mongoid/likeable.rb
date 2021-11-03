@@ -121,7 +121,7 @@ module Mongoid
     end
 
     def update_voters
-      update_attribute :votes, votes.size
+      update_attribute :votes, voters.size
     end
   end
 end
